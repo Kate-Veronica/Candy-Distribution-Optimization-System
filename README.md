@@ -57,10 +57,10 @@ Project-1/
 - Provides non-technical users a visual interface to simulate and compare scenarios.
 - Decision intelligence approach helps balance speed, cost, and profitability.
 
-### Links
+## Links
 - Research Paper:
 - Deployed Dashboard:
 - Project Feedback Video: 
 
-### Conclusion
+## Conclusion
 This system predicts lead times and recommends the best factory assignments, helping Nassau Candy Distributor improve shipping efficiency and profitability through data-driven decisions.
