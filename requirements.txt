@@ -2,6 +2,10 @@ streamlit
 pandas
 numpy
 scikit-learn
+<<<<<<< HEAD
 joblib
 setuptools
 wheel
+=======
+joblib
+>>>>>>> b0cebfcab0cc1590f77ae1b6a07f220c5a876ad6
