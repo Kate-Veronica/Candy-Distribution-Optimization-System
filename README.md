@@ -63,7 +63,7 @@ Project 1/
   
 ## Links
 - Research Paper [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
-- Deployed Dashboard:
+- Deployed Dashboard: [https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/]
 - Project Feedback Video: 
 
 ## Conclusion
