@@ -50,9 +50,20 @@ else:
 
 st.subheader("Enter values for a single prediction")
 
+categorical_cols = ["Ship Mode", "Country/Region", "City", "State/Province",
+                    "Division", "Region", "Product Name"]
+
 input_data = {}
+
 for col in columns:
-    input_data[col] = st.text_input(col, "")
+    if col in categorical_cols:
+        if uploaded_file:
+            options = sorted(data[col].dropna().unique())
+        else:
+            options = ["Option1", "Option2", "Option3"]  
+        input_data[col] = st.selectbox(col, options=options)
+    else:
+        input_data[col] = st.number_input(col, value=0)
 
 if st.button("Predict Single Row"):
     try:
@@ -60,9 +71,16 @@ if st.button("Predict Single Row"):
 
         for col, le in encoders.items():
             if col in input_df.columns:
-                input_df[col] = input_df[col].map(lambda x: le.transform([x])[0] if x in le.classes_ else -1)
+                input_df[col] = input_df[col].map(
+                    lambda x: le.transform([x])[0] if x in le.classes_ else -1
+                )
 
-        input_df = input_df.astype(float)
+        for col in input_df.columns:
+            if col not in categorical_cols:
+                input_df[col] = pd.to_numeric(input_df[col], errors='coerce').fillna(0)
+
+        input_df = input_df[columns]
+
         pred = model.predict(input_df)
         st.success(f"Predicted Sales: {pred[0]:.2f}")
     except Exception as e:
