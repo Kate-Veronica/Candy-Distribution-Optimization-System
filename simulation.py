@@ -19,9 +19,13 @@ def simulate_factories(sample, factories, model, preprocessor, columns):
                 temp[col] = 0
 
         temp_df = pd.DataFrame([temp])
-        temp_df = temp_df[columns]   # 🔥 important fix
+
+        temp_df = temp_df[columns]              
+        temp_df = temp_df.fillna(0)             
+        temp_df = temp_df.apply(pd.to_numeric, errors='coerce').fillna(0)  
 
         X_temp = preprocessor.transform(temp_df)
+
         pred = model.predict(X_temp)[0]
 
         results.append((factory, round(pred, 2)))
