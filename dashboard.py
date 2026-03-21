@@ -1,48 +1,43 @@
 import streamlit as st
 import pandas as pd
-import joblib
-import numpy as np
+import pickle
 
-model = joblib.load("lead_time_model.pkl")
+@st.cache_data
+def load_data(path="cleaned_data.csv"):
+    df = pd.read_csv(path)
+    return df
 
-st.title("Nassau Candy Factory Optimization Simulator")
+data = load_data()
 
-uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+@st.cache_resource
+def load_model(path="model.pkl"):
+    with open(path, "rb") as f:
+        return pickle.load(f)
 
-if uploaded_file is not None:
-    data = pd.read_csv(uploaded_file)
+model = load_model()
 
-    st.write("Preview of uploaded data:")
-    st.dataframe(data.head())
+st.sidebar.header("Filter Options")
 
-    for col in ['Order Date', 'Ship Date']:
-        if col in data.columns:
-            data[col] = pd.to_datetime(data[col], errors='coerce')
+selected_category = st.sidebar.selectbox("Select Category", data["Category"].unique())
+selected_region = st.sidebar.selectbox("Select Region", data["Region"].unique())
 
-    if 'Lead Time' not in data.columns and 'Order Date' in data.columns and 'Ship Date' in data.columns:
-        data['Lead Time'] = (data['Ship Date'] - data['Order Date']).dt.days
+@st.cache_data
+def filter_data(category, region):
+    return data[(data["Category"] == category) & (data["Region"] == region)]
 
-    required_columns = ['Lead Time']   
+filtered_data = filter_data(selected_category, selected_region)
 
-    for col in required_columns:
-        if col not in data:
-            data[col] = 0
+@st.cache_data
+def get_predictions(filtered_df):
+    features = filtered_df.drop(columns=["TargetColumn"]) if "TargetColumn" in filtered_df else filtered_df
+    return model.predict(features)
 
-    X = data[required_columns]
+predictions = get_predictions(filtered_data)
 
-    X = X.apply(pd.to_numeric, errors='coerce').fillna(0)
+st.title("Nassau Candy Dashboard")
 
-    predictions = model.predict(X)
+st.subheader("Filtered Data")
+st.dataframe(filtered_data.head(100))  
 
-    data['Predicted Lead Time'] = predictions
-
-    st.write("Predicted Lead Time:")
-    st.dataframe(data[['Predicted Lead Time']])
-
-    csv = data.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Download predictions as CSV",
-        data=csv,
-        file_name='predicted_lead_times.csv',
-        mime='text/csv',
-    )
+st.subheader("Predictions")
+st.write(predictions)
