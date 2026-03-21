@@ -1,5 +1,0 @@
-streamlit==1.29.0
-numpy>=1.25.2,<1.26
-pandas
-joblib
-st-aggrid>=0.4.11,<1.0
