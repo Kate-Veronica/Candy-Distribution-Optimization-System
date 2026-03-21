@@ -35,6 +35,8 @@ filtered_data = filter_data(selected_category, selected_region)
 
 @st.cache_data
 def get_predictions(filtered_df):
+    if filtered_df.empty:
+        return pd.Series([], dtype=float)
     for col in model.feature_names_in_:
         if col not in filtered_df.columns:
             filtered_df[col] = 0
@@ -46,9 +48,16 @@ predictions = get_predictions(filtered_data)
 
 st.title("Nassau Candy Dashboard")
 st.subheader("Filtered Data")
-st.dataframe(filtered_data.head(100))
+if filtered_data.empty:
+    st.write("No data available for the selected Category and Region.")
+else:
+    st.dataframe(filtered_data.head(100))
+
 st.subheader("Predictions")
-st.write(predictions)
+if filtered_data.empty:
+    st.write("No predictions available for the selected Category and Region.")
+else:
+    st.write(predictions)
 
 st.download_button(
     label="Download Filtered Data",
@@ -57,9 +66,10 @@ st.download_button(
     mime="text/csv"
 )
 
-st.download_button(
-    label="Download Predictions",
-    data=pd.DataFrame(predictions, columns=["Prediction"]).to_csv(index=False).encode("utf-8"),
-    file_name="predictions.csv",
-    mime="text/csv"
-)
+if not filtered_data.empty:
+    st.download_button(
+        label="Download Predictions",
+        data=pd.DataFrame(predictions, columns=["Prediction"]).to_csv(index=False).encode("utf-8"),
+        file_name="predictions.csv",
+        mime="text/csv"
+    )
