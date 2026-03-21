@@ -22,7 +22,7 @@ model = load_model()
 st.sidebar.header("Filter Options")
 
 category_col = "Category" if "Category" in data.columns else data.columns[0]
-region_col = "Region" if "Region" in data.columns else data.columns[1]  # fallback
+region_col = "Region" if "Region" in data.columns else data.columns[1]
 
 selected_category = st.sidebar.selectbox("Select Category", data[category_col].unique())
 selected_region = st.sidebar.selectbox("Select Region", data[region_col].unique())
@@ -37,17 +37,16 @@ filtered_data = filter_data(selected_category, selected_region)
 def get_predictions(filtered_df):
     for col in model.feature_names_in_:
         if col not in filtered_df.columns:
-            filtered_df[col] = 0  
+            filtered_df[col] = 0
     features = filtered_df[model.feature_names_in_]
+    features = features.apply(pd.to_numeric, errors='coerce').fillna(0)
     return model.predict(features)
 
 predictions = get_predictions(filtered_data)
 
 st.title("Nassau Candy Dashboard")
-
 st.subheader("Filtered Data")
-st.dataframe(filtered_data.head(100))  
-
+st.dataframe(filtered_data.head(100))
 st.subheader("Predictions")
 st.write(predictions)
 
