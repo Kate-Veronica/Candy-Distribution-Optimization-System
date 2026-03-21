@@ -1,5 +1,15 @@
 streamlit==1.29.0
+
 numpy>=1.25.2,<1.26
 pandas>=2.0,<2.1
-openpyxl
-plotly
+openpyxl==3.1.2       
+xlrd==2.0.1           
+
+plotly==5.18.0
+matplotlib==3.7.2
+seaborn==0.12.2
+
+st-aggrid==0.4.15
+pillow==10.0.1         
+
+scipy==1.11.1
