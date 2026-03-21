@@ -1,5 +1,4 @@
 import pandas as pd
-import joblib
 
 def simulate_factories(sample, factories, model, preprocessor, columns):
     results = []
@@ -12,14 +11,14 @@ def simulate_factories(sample, factories, model, preprocessor, columns):
             temp[col] = 0
 
         col_name = f"Factory_{factory}"
-        temp[col_name] = 1
-
-        temp_df = pd.DataFrame([temp])
+        if col_name in columns:
+            temp[col_name] = 1
 
         for col in columns:
-            if col not in temp_df.columns:
-                temp_df[col] = 0
+            if col not in temp:
+                temp[col] = 0
 
+        temp_df = pd.DataFrame([temp])
         temp_df = temp_df[columns]
 
         X_temp = preprocessor.transform(temp_df)
