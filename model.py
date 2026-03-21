@@ -11,8 +11,10 @@ try:
         model = pickle.load(f)
     with open("columns.pkl", "rb") as f:
         columns = pickle.load(f)
+    with open("encoders.pkl", "rb") as f:
+        encoders = pickle.load(f)
 except FileNotFoundError:
-    st.error("Model files not found. Ensure 'model.pkl' and 'columns.pkl' are in the same folder.")
+    st.error("Model files not found. Ensure 'model.pkl', 'columns.pkl', and 'encoders.pkl' are in the same folder.")
     st.stop()
 
 uploaded_file = st.file_uploader("Upload your cleaned CSV", type="csv")
@@ -24,12 +26,16 @@ if uploaded_file:
         st.error(f"Error reading CSV file: {e}")
         st.stop()
 
-    missing_cols = [col for col in columns if col not in data.columns]
+    missing_cols = [c for c in columns if c not in data.columns]
     if missing_cols:
         st.error(f"Missing columns in CSV: {missing_cols}")
         st.stop()
 
     X = data[columns].copy()
+
+    for col, le in encoders.items():
+        if col in X.columns:
+            X[col] = X[col].map(lambda x: le.transform([x])[0] if x in le.classes_ else -1)
 
     try:
         predictions = model.predict(X)
@@ -42,15 +48,20 @@ if uploaded_file:
 else:
     st.info("Please upload a cleaned CSV file to get predictions.")
 
-st.subheader("Enter values for prediction manually")
+st.subheader("Enter values for a single prediction")
 
 input_data = {}
 for col in columns:
     input_data[col] = st.text_input(col, "")
 
-if st.button("Predict Sales for Single Input"):
+if st.button("Predict Single Row"):
     try:
         input_df = pd.DataFrame([input_data])
+
+        for col, le in encoders.items():
+            if col in input_df.columns:
+                input_df[col] = input_df[col].map(lambda x: le.transform([x])[0] if x in le.classes_ else -1)
+
         input_df = input_df.astype(float)
         pred = model.predict(input_df)
         st.success(f"Predicted Sales: {pred[0]:.2f}")
