@@ -1,28 +1,18 @@
-<<<<<<< HEAD
 import pandas as pd
 
-data = pd.read_csv('Nassau Candy Distributor.csv')
+data = pd.read_csv("Nassau Candy Distributor.csv")
 
-data['Order Date'] = pd.to_datetime(data['Order Date'],dayfirst = True)
-data['Ship Date'] = pd.to_datetime(data['Ship Date'],dayfirst = True)
+data['Order Date'] = pd.to_datetime(data['Order Date'], errors='coerce')
+data['Ship Date'] = pd.to_datetime(data['Ship Date'], errors='coerce')
 
-data['Lead Time'] = (data['Ship Date'] - data['Order Date']).dt.days
-data = data[data['Lead Time']>=0]
-
-data.to_csv('cleaned_data.csv', index=False)
-
-=======
-import pandas as pd
-
-data = pd.read_csv('Nassau Candy Distributor.csv')
-
-data['Order Date'] = pd.to_datetime(data['Order Date'],dayfirst = True)
-data['Ship Date'] = pd.to_datetime(data['Ship Date'],dayfirst = True)
+data = data.dropna(subset=['Order Date', 'Ship Date'])
 
 data['Lead Time'] = (data['Ship Date'] - data['Order Date']).dt.days
-data = data[data['Lead Time']>=0]
 
-data.to_csv('cleaned_data.csv', index=False)
+data = data[data['Lead Time'] > 0]
 
->>>>>>> cc7ccdd2d1c495804b086cae34a573a05be36310
-print("Cleaned data saved!")
+data.reset_index(drop=True, inplace=True)
+
+data.to_csv("cleaned_data.csv", index=False)
+
+print("Data Cleaned")

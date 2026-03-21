@@ -1,69 +1,43 @@
-<<<<<<< HEAD
+import streamlit as st
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
 import joblib
+import numpy as np
 
-data = pd.read_csv("cleaned_data.csv")
-data.columns = data.columns.str.strip()
+model = joblib.load("lead_time_model.pkl")
 
-drop_cols = [
-    'Order ID', 'Product ID', 'Customer ID', 'Product Name', 'Row ID',
-    'Order Date', 'Ship Date', 'City', 'State/Province', 'Postal Code', 'Country/Region'
-]
-for col in drop_cols:
-    if col in data.columns:
-        data.drop(col, axis=1, inplace=True)
+st.title("Nassau Candy Factory Optimization Simulator")
 
-categorical_cols = [c for c in ['Factory', 'Region', 'Ship Mode', 'Division'] if c in data.columns]
-data = pd.get_dummies(data, columns=categorical_cols)
+st.write("Upload your order data to predict lead times:")
 
-
-X = data.drop('Lead Time', axis=1)
-y = data['Lead Time']
-
-model = RandomForestRegressor(n_estimators=50, max_depth=10, random_state=42)
-model.fit(X, y)
-
-joblib.dump(model, 'model.pkl', compress=3)  
-joblib.dump(X.columns, 'columns.pkl')
-
-print("Model trained")
-=======
-import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-import joblib
-
-data = pd.read_csv("cleaned_data.csv")
-data.columns = data.columns.str.strip()
-
-drop_cols = ['Order ID', 'Product ID', 'Customer ID', 'Product Name', 'Row ID', 
-             'Country/Region', 'City', 'State/Province', 'Postal Code', 'Division']
-data = data.drop(columns=[c for c in drop_cols if c in data.columns])
-
-date_cols = ['Order Date', 'Ship Date']
-for col in date_cols:
-    if col in data.columns:
-        data[col] = pd.to_datetime(data[col]).map(pd.Timestamp.toordinal)
-
-X = data.drop('Lead Time', axis=1)
-y = data['Lead Time']
-
-categorical_cols = [c for c in ['Factory', 'Region', 'Ship Mode'] if c in X.columns]
-
-preprocessor = ColumnTransformer(
-    transformers=[('cat', OneHotEncoder(handle_unknown='ignore'), categorical_cols)],
-    remainder='passthrough'
-)
-X_processed = preprocessor.fit_transform(X)
-
-model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_processed, y)
-
-joblib.dump(model, 'model.pkl')
-joblib.dump(preprocessor, 'preprocessor.pkl')
-joblib.dump(X.columns, 'columns.pkl')
-
-print("model trained")
->>>>>>> cc7ccdd2d1c495804b086cae34a573a05be36310
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
+    
+    st.write("Preview of uploaded data:")
+    st.dataframe(data.head())
+    
+    for col in ['Order Date', 'Ship Date']:
+        if col in data.columns:
+            data[col] = pd.to_datetime(data[col], errors='coerce')
+    
+    if 'Lead Time' not in data.columns and 'Order Date' in data.columns and 'Ship Date' in data.columns:
+        data['Lead Time'] = (data['Ship Date'] - data['Order Date']).dt.days
+    
+    numeric_features = data.select_dtypes(include=np.number)
+    
+    if numeric_features.empty:
+        st.error("No numeric columns found for prediction!")
+    else:
+        predictions = model.predict(numeric_features)
+        data['Predicted Lead Time'] = predictions
+        
+        st.write("Predicted Lead Time:")
+        st.dataframe(data[['Predicted Lead Time']])
+        
+        csv = data.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download predictions as CSV",
+            data=csv,
+            file_name='predicted_lead_times.csv',
+            mime='text/csv',
+        )
