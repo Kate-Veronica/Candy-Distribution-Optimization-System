@@ -1,18 +1,19 @@
 # Candy-Distribution-Optimization-System
 
 ## Overview:
-This project simulates and recommends optimal product-to-factory assignments for Nassau Candy Distributor. Using historical order data, the system predicts lead times for different factory configurations and provides actionable recommendations to improve operational efficiency.
+This project predicts sales for Nassau Candy Distributor based on historical order data. Using a trained Linear Regression model, the system allows users to upload a cleaned dataset, enter feature values, and obtain sales predictions through an interactive Streamlit dashboard.
 
 ## Features
-- Predicts shipping lead time for different factories.
-- Simulates “what-if” scenarios for product reassignment.
-- Visualizes lead time comparison using Streamlit.
-- Optimized Random Forest model for deployment.
+- Predicts sales for each order based on multiple features.
+- Supports CSV upload for batch predictions.
+- Interactive input for manual feature testing.
+- Displays predictions directly in the dashboard.
 
 ## Dataset
 - **Source:** Historical orders from Nassau Candy Distributor.
-- **Fields:** Order Date, Ship Date, Product, Factory, Region, Ship Mode, Sales, Units, Gross Profit, Cost, etc.
-- **Note:** Dataset is not included in the repository due to size. You can replace it with your own CSV following the same schema.
+- **Fields:** Row ID, Order ID, Order Date, Ship Date, Ship Mode, Customer ID, Country/Region, City, State/Province, Postal Code, Division, Region, Product ID, Product Name, Units, Gross Profit, Cost, Lead Time, Sales.  
+- **Note:** Only the cleaned dataset (`cleaned_data.csv`) is included in the repository. Use this file to train and test the model.  
+- **Optional:** You can replace it with your own CSV following the same schema.  
 - **Download** (click here to download) 
   [https://drive.google.com/file/d/1IZjoQwuhbNZUnmMCL6j441tFoMkDEq-H/view?usp=drive_link]
 - - You can also replace it with your own CSV following the same schema.
@@ -22,45 +23,48 @@ This project simulates and recommends optimal product-to-factory assignments for
 ```bash
 pip install -r requirements.txt
 ```
-### 2. Run the dashboard
+### 2. Train the model
+Run once to generate **model.pkl**:
 ```bash
-streamlit run dashboard.py
+python train_model.py
 ```
-- Use the sidebar to select Product, Region, and Ship Mode.
-- Click Run Simulation to see predicted lead times for all factories.
-- The best factory will be highlighted automatically.
+- This will load **cleaned_data.csv**, encode categorical features, train a Linear Regression model, and save the model and encoders to **model.pkl**.
 
-### 3. Notes
-- Ensure **model.pkl** and columns.pkl are in the same directory as dashboard.py.
-- The **.pkl** files are compressed Random Forest models for efficient predictions.
-
-  Repository Structure
+### 3. Run the Streamlit dashboard
 ```bash
-Project-1/
+streamlit run model.py
+```
+- Upload cleaned_data.csv in the app.
+- Enter values for features (numeric or select boxes for categories).
+- Click Predict Sales to see the predicted output.
+
+### Repository Structure
+```bash
+Project 1/
 │
-├─ model.py           # Trains and saves the Random Forest model
-├─ dashboard.py       # Streamlit dashboard for simulation
-├─ cleaned_data.csv   # Cleaned dataset
-├─ model.pkl          # Compressed trained model
-├─ columns.pkl        # Model feature columns
-├─ requirements.txt   # Python dependencies
-└─ README.md          # This file
+├─ train_model.py       # Script to train the Linear Regression model
+├─ model.py             # Streamlit dashboard for predictions
+├─ cleaned_data.csv     # Cleaned dataset
+├─ model.pkl            # Trained model saved after training
+├─ .gitignore           # Excludes model.pkl and cache
+└─ README.md            # Project instructions
 ```
+
 ## Technology Stack
 - Python 3.13
 - Pandas, NumPy
-- Scikit-learn (Random Forest Regressor)
+- Scikit-learn (Linear Regressor)
 - Streamlit for dashboard
 
 ## Project Outcome
-- Reduces shipping lead time through optimized factory assignments.
-- Provides non-technical users a visual interface to simulate and compare scenarios.
-- Decision intelligence approach helps balance speed, cost, and profitability.
-
+- Predicts sales accurately using historical order data.
+- Allows non-technical users to run simulations via CSV upload and manual input.
+- Supports decision-making by providing actionable predictions for inventory and shipping planning.
+  
 ## Links
 - Research Paper [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
 - Deployed Dashboard:
 - Project Feedback Video: 
 
 ## Conclusion
-This system predicts lead times and recommends the best factory assignments, helping Nassau Candy Distributor improve shipping efficiency and profitability through data-driven decisions.
+This system provides an easy-to-use prediction dashboard for Nassau Candy Distributor, enabling data-driven decisions to optimize sales, reduce errors, and improve operational efficiency.
