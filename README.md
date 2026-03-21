@@ -58,7 +58,7 @@ Project-1/
 - Decision intelligence approach helps balance speed, cost, and profitability.
 
 ## Links
-- Research Paper:
+- Research Paper [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
 - Deployed Dashboard:
 - Project Feedback Video: 
 
