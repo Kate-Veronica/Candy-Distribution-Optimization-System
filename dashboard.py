@@ -5,9 +5,12 @@ import pickle
 @st.cache_data
 def load_data(path="cleaned_data.csv"):
     df = pd.read_csv(path)
+    df.columns = df.columns.str.strip()
     return df
 
 data = load_data()
+
+st.write("Columns in dataset:", data.columns.tolist())
 
 @st.cache_resource
 def load_model(path="model.pkl"):
@@ -18,12 +21,15 @@ model = load_model()
 
 st.sidebar.header("Filter Options")
 
-selected_category = st.sidebar.selectbox("Select Category", data["Category"].unique())
-selected_region = st.sidebar.selectbox("Select Region", data["Region"].unique())
+category_col = "Category" if "Category" in data.columns else data.columns[0]
+region_col = "Region" if "Region" in data.columns else data.columns[1]  # fallback
+
+selected_category = st.sidebar.selectbox("Select Category", data[category_col].unique())
+selected_region = st.sidebar.selectbox("Select Region", data[region_col].unique())
 
 @st.cache_data
 def filter_data(category, region):
-    return data[(data["Category"] == category) & (data["Region"] == region)]
+    return data[(data[category_col] == category) & (data[region_col] == region)]
 
 filtered_data = filter_data(selected_category, selected_region)
 
