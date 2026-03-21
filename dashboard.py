@@ -29,7 +29,7 @@ filtered_data = filter_data(selected_category, selected_region)
 
 @st.cache_data
 def get_predictions(filtered_df):
-    features = filtered_df.drop(columns=["TargetColumn"]) if "TargetColumn" in filtered_df else filtered_df
+    features = filtered_df.drop(columns=["TargetColumn"], errors="ignore")
     return model.predict(features)
 
 predictions = get_predictions(filtered_data)
@@ -41,3 +41,17 @@ st.dataframe(filtered_data.head(100))
 
 st.subheader("Predictions")
 st.write(predictions)
+
+st.download_button(
+    label="Download Filtered Data",
+    data=filtered_data.to_csv(index=False).encode("utf-8"),
+    file_name="filtered_data.csv",
+    mime="text/csv"
+)
+
+st.download_button(
+    label="Download Predictions",
+    data=pd.DataFrame(predictions, columns=["Prediction"]).to_csv(index=False).encode("utf-8"),
+    file_name="predictions.csv",
+    mime="text/csv"
+)
