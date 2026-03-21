@@ -1,60 +1,48 @@
 import streamlit as st
 import pandas as pd
 import joblib
-from simulation import simulate_factories
+import numpy as np
 
-st.set_page_config(page_title="Nassau Candy Dashboard", layout="wide")
+model = joblib.load("lead_time_model.pkl")
+
 st.title("Nassau Candy Factory Optimization Simulator")
 
-data = pd.read_csv("cleaned_data.csv")
-data.columns = data.columns.str.strip()
-model = joblib.load("model.pkl")
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
-try:
-    preprocessor = joblib.load("preprocessor.pkl")
-except:
-    preprocessor = None
+if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
 
-columns = joblib.load("columns.pkl")
+    st.write("Preview of uploaded data:")
+    st.dataframe(data.head())
 
-factory_columns = [c for c in columns if c.startswith("Factory_")]
-factories = [c.replace("Factory_", "") for c in factory_columns]
-if not factories:
-    factories = ["Lot's O' Nuts", "Wicked Choccy's", "Sugar Shack", "Secret Factory", "The Other Factory"]
+    for col in ['Order Date', 'Ship Date']:
+        if col in data.columns:
+            data[col] = pd.to_datetime(data[col], errors='coerce')
 
-product_list = ["-- Select Product --"] + list(data['Product Name'].unique()) if 'Product Name' in data.columns else ["-- Select Product --"]
-region_list = ["-- Select Region --"] + list(data['Region'].unique()) if 'Region' in data.columns else ["-- Select Region --"]
-ship_mode_list = ["-- Select Ship Mode --"] + list(data['Ship Mode'].unique()) if 'Ship Mode' in data.columns else ["-- Select Ship Mode --"]
+    if 'Lead Time' not in data.columns and 'Order Date' in data.columns and 'Ship Date' in data.columns:
+        data['Lead Time'] = (data['Ship Date'] - data['Order Date']).dt.days
 
-selected_product = st.sidebar.selectbox("Select Product", product_list)
-selected_region = st.sidebar.selectbox("Select Region", region_list)
-selected_ship_mode = st.sidebar.selectbox("Select Ship Mode", ship_mode_list)
+    required_columns = ['Lead Time']   
 
-if st.button("Run Simulation"):
-    if selected_product.startswith("--") or selected_region.startswith("--") or selected_ship_mode.startswith("--"):
-        st.warning("⚠️ Please select Product, Region, and Ship Mode before running simulation.")
-    else:
-        filtered = data[
-            (data['Product Name'] == selected_product) &
-            (data['Region'] == selected_region) &
-            (data['Ship Mode'] == selected_ship_mode)
-        ]
-        sample = filtered.iloc[0] if not filtered.empty else data.iloc[0]
-        results = simulate_factories(sample, factories, model, preprocessor, columns)
-        df_results = pd.DataFrame(results, columns=['Factory', 'Predicted Lead Time']).sort_values(by='Predicted Lead Time')
+    for col in required_columns:
+        if col not in data:
+            data[col] = 0
 
-        st.subheader("Factory Lead Time Predictions")
-        st.dataframe(df_results)
-        st.subheader("Lead Time Comparison")
-        st.bar_chart(df_results.set_index('Factory')['Predicted Lead Time'])
+    X = data[required_columns]
 
-        best = min(results, key=lambda x: x[1])
-        st.success(f"✅ Best Factory: {best[0]}")
+    X = X.apply(pd.to_numeric, errors='coerce').fillna(0)
 
-factory_df = pd.DataFrame({
-    'Factory': factories,
-    'lat': [32.881893, 32.076176, 48.11914, 41.446333, 35.1175],
-    'lon': [-111.768036, -81.088371, -96.18115, -90.565487, -89.971107]
-})
-st.subheader("Factory Locations")
-st.map(factory_df.rename(columns={'lat':'latitude','lon':'longitude'}))
+    predictions = model.predict(X)
+
+    data['Predicted Lead Time'] = predictions
+
+    st.write("Predicted Lead Time:")
+    st.dataframe(data[['Predicted Lead Time']])
+
+    csv = data.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download predictions as CSV",
+        data=csv,
+        file_name='predicted_lead_times.csv',
+        mime='text/csv',
+    )
