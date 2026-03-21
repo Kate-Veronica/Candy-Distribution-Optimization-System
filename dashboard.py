@@ -35,7 +35,10 @@ filtered_data = filter_data(selected_category, selected_region)
 
 @st.cache_data
 def get_predictions(filtered_df):
-    features = filtered_df.drop(columns=["TargetColumn"], errors="ignore")
+    for col in model.feature_names_in_:
+        if col not in filtered_df.columns:
+            filtered_df[col] = 0  
+    features = filtered_df[model.feature_names_in_]
     return model.predict(features)
 
 predictions = get_predictions(filtered_data)
