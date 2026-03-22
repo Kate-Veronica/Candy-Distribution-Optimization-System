@@ -4,12 +4,13 @@
 This project predicts sales for Nassau Candy Distributor based on historical order data and provides an **interactive Streamlit dashboard** for decision-making. Users can explore different product, category, and region combinations, generate predictions, and download results for analysis. The system supports **scenario simulations** and robust handling of unmatched or empty filters.
 
 ## Features
-- Predicts sales for each order based on multiple features.
-- Interactive filters for **Category**,**Region** and **Ship Mode**.
-- Displays predictions directly in the dashboard.
-- Downloadable CSVs for **filtered data** and **predictions**.
-- Handles edge cases with unmatched filters gracefully.
-- Supports CSV upload for batch predictions (optional).
+- Predicts sales for selected products, categories, and regions.
+- Interactive filters: Category, Region, Ship Mode.
+- Real-time predictions displayed in the dashboard.
+- Downloadable CSVs for filtered data and predictions.
+- Visual comparison of actual vs predicted sales using bar charts.
+- Automatically handles unmatched selections gracefully.
+- Fast response with caching optimization.
 
 ## Dataset
 - **Source:** Historical orders from Nassau Candy Distributor.
