@@ -1,16 +1,11 @@
-# Candy-Distribution-Optimization-System
+# Factory Reallocation & Sales Optimization System – Nassau Candy Distributor
 
 ## Overview:
-This project predicts sales for Nassau Candy Distributor based on historical order data. Using a trained **Linear Regression model**, the system provides an interactive **Streamlit dashboard** that allows users to filter data, view analytics, and generate sales predictions in real-time.
-
-The dashboard is robust and user-friendly:
-- Handles all Category + Region selections, including unmatched or empty combinations.
-- Automatically shows closest matching data when exact matches are not available.
-- Optimized with caching for fast filter updates and predictions.
+This project predicts sales for Nassau Candy Distributor based on historical order data and provides an **interactive Streamlit dashboard** for decision-making. Users can explore different product, category, and region combinations, generate predictions, and download results for analysis. The system supports **scenario simulations** and robust handling of unmatched or empty filters.
 
 ## Features
 - Predicts sales for each order based on multiple features.
-- Interactive filters for **Category** and **Region**.
+- Interactive filters for **Category**,**Region** and **Ship Mode**.
 - Displays predictions directly in the dashboard.
 - Downloadable CSVs for **filtered data** and **predictions**.
 - Handles edge cases with unmatched filters gracefully.
@@ -62,10 +57,10 @@ Project 1/
 - Streamlit for dashboard and deployment
 
 ## Project Outcome
-- Provides accurate sales predictions using historical order data.
-- Non-technical users can run simulations via CSV upload and manual filter selections.
-- Supports data-driven decisions for inventory and shipping optimization.
-- Fully interactive and robust dashboard, ready for deployment.
+- Provides accurate sales predictions for all product-category-region combinations.
+- Dashboard supports scenario simulations and data-driven decision-making.
+- Downloadable outputs for reporting and analysis.
+- Robust and user-friendly system, optimized for fast interactions.
   
 ## Links
 - Research Paper [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
@@ -73,4 +68,4 @@ Project 1/
 - Project Feedback Video: []
 
 ## Conclusion
-This system provides an easy-to-use, interactive prediction dashboard for Nassau Candy Distributor, enabling data-driven decisions, reducing errors, and optimizing operational efficiency.
+This system provides an interactive, predictive dashboard that transforms Nassau Candy Distributor’s operations from static analytics to intelligent, actionable decision-making. By forecasting sales and recommending optimized product assignments, it improves efficiency, profitability, and operational insight, while remaining user-friendly, scalable, and robust.
