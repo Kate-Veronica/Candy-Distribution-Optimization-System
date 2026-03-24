@@ -3,11 +3,11 @@
 ### DataSet:
 [https://drive.google.com/file/d/15qNlSaU3emw8ex5S3kRg-4vlebQBKCsb/view?usp=drive_link]
 
+### Live Dashboard: 
+[https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/]
+
 ### Report Paper:
 [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?tab=t.0#heading=h.lxndaeizt6fd]
-
-### Streamlit: 
-[https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/]
 
 ## Project Overview:
 The project is to design a **decision intelligence system** for Nassau Candy Distributor to improve their allocation of products from factories and increase their shipping efficiency.
