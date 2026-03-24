@@ -1,81 +1,140 @@
 # Factory Reallocation & Sales Optimization System – Nassau Candy Distributor
 
 ### DataSet:
+[ https://drive.google.com/file/d/15qNlSaU3emw8ex5S3kRg-4vlebQBKCsb/view?usp=drive_link ]
 
+### Report Paper:
+[ https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?tab=t.0#heading=h.lxndaeizt6fd ]
 
-
-
-
-
+### Streamlit: 
+[ https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/ ]
 
 ## Project Overview:
-This project predicts sales for Nassau Candy Distributor based on historical order data and provides an **interactive Streamlit dashboard** for decision-making. Users can explore different product, category, and region combinations, generate predictions, and download results for analysis. The system supports **scenario simulations** and robust handling of unmatched or empty filters.
+The project is to design a **decision intelligence system** for Nassau Candy Distributor to improve their allocation of products from factories and increase their shipping efficiency.
 
-## Features
-- Predicts sales for selected products, categories, and regions.
-- Interactive filters: Category, Region, Ship Mode.
-- Real-time predictions displayed in the dashboard.
-- Downloadable CSVs for filtered data and predictions.
-- Visual comparison of actual vs predicted sales using bar charts.
-- Automatically handles unmatched selections gracefully.
-- Fast response using caching optimization.
+In contrast to traditional analytics, this system:
+- Forecasts outcomes
+- Runs simulations
+- Enables data-informed decisions
 
-## Dataset
-- **Source:** Historical orders from Nassau Candy Distributor.
-- **Fields:** Row ID, Order ID, Order Date, Ship Date, Ship Mode, Customer ID, Country/Region, City, State/Province, Postal Code, Division, Region, Product ID, Product Name, Units, Gross Profit, Cost, Lead Time, Sales.
-- **Download** (click here to download) 
-  [https://drive.google.com/file/d/1IZjoQwuhbNZUnmMCL6j441tFoMkDEq-H/view?usp=drive_link]
-  - You can also replace it with your own CSV following the same schema.
+## Business Problem
+Static rules for assigning products to factories by Nassau Candy lead to the following effects:
+- High shipping lead times  
+- Inefficient routes  
+- Erosion of profit margins
 
-## How to Run
-### 1. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-### 2. Train the model
-Run once to generate **model.pkl**:
-```bash
-python train_model.py
-```
-- Loads **cleaned_data.csv**, encode categorical features, train a Linear Regression model, and saves **model.pkl**.
+There is no system for simulating different reassignment scenarios, predicting the results of a process before it is executed, and optimizing decisions at scale.
 
-### 3. Run the Streamlit dashboard
-```bash
-streamlit run dashboard.py
-```
-- Use sidebar filters to select Category and Region.
-- View predictions directly in the dashboard.
-- Download filtered data and predictions as CSV files.
+## Solution Approach
+The project proposes a **Predictive + Simulation-based Recommendation System**:
 
-### Repository Structure
-```bash
-Project 1/
-│
-├─ train_model.py
-├─  model.py
-├─ dashboard.py         
-├─ cleaned_data.csv     
-├─ model.pkl         
-├─ requirements.txt     
-└─ README.md             
-```
+### 1. Predictive Layer
+- Machine Learning model predicts **Sales performance**
+
+### 2. Simulation Layer
+- Tests multiple factory allocations
+- Evaluates performance under different scenarios
+
+### 3. Decision Layer
+- Assists in the selection of the best factory assignments
 
 ## Technology Stack
-- Python 3.11
+- Python 
 - Pandas, NumPy
-- Scikit-learn (Linear Regressor)
-- Streamlit for dashboard and deployment
-
-## Project Outcome
-- Accurate sales predictions for all product-category-region combinations.
-- Supports scenario simulation and single-row predictions.
-- Downloadable outputs for analysis and reporting.
-- Robust, user-friendly, and optimized for fast interactions.
+- Scikit-learn 
+- Streamlit
+- Pickle / Joblib
   
-## Links
-- Research Paper: [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
-- Deployed Dashboard:
-[https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/]
+## Project Workflow
+### 1. Data Cleaning (data_cleaning.py)
+- Convert date columns  
+- Create Lead Time feature 
+- Remove invalid/negative values
 
-## Conclusion
-This system transforms Nassau Candy Distributor’s operations from static analytics to intelligent, actionable decision-making, enabling optimized product assignments, improved efficiency, and operational insight.
+### 2. Model Training (train_model.py)
+- Algorithm: Linear Regression  
+- Target: Sales
+- Label Encoding applied for categorical features  
+- Model and encoders saved as `.pkl` files
+
+### 3. Prediction System (model.py)
+- Upload clean dataset  
+- Apply encoding  
+- Generate predictions  
+- Capabilities:  
+  - Bulk predictions
+  - Single input prediction
+ 
+### 4. Dashboard (dashboard.py)
+- Interactive filtering:
+  - Category  
+  - Region  
+- Displays:
+  - Actual vs Predicted Sales  
+- Visualizations:
+  - Bar charts  
+- Export:
+  - Download predictions
+ 
+### 5. Simulation Engine (simulation.py)
+- Simulates product reassignment across factories  
+- Predicts performance under each configuration
+- Enables comparative analysis
+
+## Key Features
+- Sales Prediction Model
+- Factory Reallocation Simulation
+- Interactive Dashboard
+- Sales vs Predicted Comparison
+- CSV Export
+
+## How to Run
+
+### Install Dependencies
+```
+pip install -r requirements.txt
+```
+### 1. Clean data
+```
+python data_cleaning.py
+```
+
+### 2. Train Model
+```
+python train_model.py
+```
+
+### Run Dashboard
+```
+streamlit run dashboard.py
+```
+
+## Project Structure
+```
+├── data_cleaning.py       # Cleans raw data, computes Lead Time
+├── train_model.py         # Trains Linear Regression model and saves model and encoders
+├── model.pkl              # Trained ML model for predictions
+├── columns.pkl            # Feature columns used in the model
+├── encoders.pkl           # Encoders for categorical variables
+├── dashboard.py           # Streamlit dashboard with filters, predictions, and charts
+├── model.py               # Streamlit app for CSV upload and single/bulk predictions
+├── simulation.py          # Simulates factory-product reassignments
+├── app.py                 # Simple Streamlit preview and prediction interface
+├── requirements.txt       # Python dependencies
+├── runtime.txt            # Python version
+```
+
+## KPIs Tracked
+- Lead Time Optimization (derived)
+- Sales Prediction Accuracy
+- Scenario Comparison Capability
+- Decision Support Efficiency
+
+## Future Enhancements
+- Add Random Forest / Gradient Boosting
+- Optimize based on Lead Time (core objective)
+- Add factory coordinates for distance optimization
+- Add recommendation ranking system
+
+## Author
+Kate Veronica Theetla
