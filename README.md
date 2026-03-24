@@ -1,6 +1,14 @@
 # Factory Reallocation & Sales Optimization System – Nassau Candy Distributor
 
-## Overview:
+### DataSet:
+
+
+
+
+
+
+
+## Project Overview:
 This project predicts sales for Nassau Candy Distributor based on historical order data and provides an **interactive Streamlit dashboard** for decision-making. Users can explore different product, category, and region combinations, generate predictions, and download results for analysis. The system supports **scenario simulations** and robust handling of unmatched or empty filters.
 
 ## Features
@@ -68,8 +76,6 @@ Project 1/
 - Research Paper: [https://docs.google.com/document/d/1qUIPZKaygyPB_RfvLSIYMbLNHWF0v3VN3wOAtoewQZE/edit?usp=drive_link]
 - Deployed Dashboard:
 [https://candy-distribution-optimization-system-bptixedttq4laxkvewq9kv.streamlit.app/]
-- Project Feedback Video:
-[]
 
 ## Conclusion
 This system transforms Nassau Candy Distributor’s operations from static analytics to intelligent, actionable decision-making, enabling optimized product assignments, improved efficiency, and operational insight.
